@@ -9,4 +9,6 @@ public interface UserRepository {
     void save(User user);
 
     User findByChatId(Long chatId);
+
+    void update(User user);
 }

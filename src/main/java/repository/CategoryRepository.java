@@ -13,4 +13,5 @@ public interface CategoryRepository {
 
     void saveAll(List<Category> categories) throws SQLException;
 
+    List<Category> findAll();
 }

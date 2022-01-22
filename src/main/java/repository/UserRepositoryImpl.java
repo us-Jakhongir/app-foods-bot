@@ -1,6 +1,7 @@
 package repository;
 
 
+import enums.BotState;
 import model.User;
 
 import java.sql.PreparedStatement;
@@ -61,8 +62,7 @@ public class UserRepositoryImpl implements UserRepository {
                         resultSet.getString("last_name"),
                         resultSet.getString("username"),
                         resultSet.getString("phone_number"),
-                        resultSet.getString("bot_state")
-                );
+                        BotState.fromString(resultSet.getString("bot_state")));
 
             }
 
@@ -70,5 +70,26 @@ public class UserRepositoryImpl implements UserRepository {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void update(User user) {
+        String UPDATE_USER_DATA = "UPDATE users SET first_name = ?, last_name = ?, username = ?, bot_state = ? WHERE id = " + user.getId();
+
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(UPDATE_USER_DATA);
+            statement.setString(1, user.getFirstname());
+            statement.setString(2, user.getLastname());
+            statement.setString(3, user.getUsername());
+            statement.setString(4, user.getBotState().name());
+
+            statement.executeUpdate();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 }

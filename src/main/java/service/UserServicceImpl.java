@@ -23,4 +23,9 @@ public class UserServicceImpl implements UserService {
     public User findByChatId(Long chatId) {
         return userRepository.findByChatId(chatId);
     }
+
+    @Override
+    public void update(User user) {
+        userRepository.update(user);
+    }
 }

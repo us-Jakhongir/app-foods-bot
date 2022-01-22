@@ -9,4 +9,5 @@ public interface UserService {
 
     User findByChatId(Long chatId);
 
+    void update(User user);
 }
