@@ -56,11 +56,11 @@ public class ProductRepositoryImpl implements ProductRepository {
             while (resultSet.next()) {
 
                 products.add(new Product(
-                resultSet.getLong("id"),
-                resultSet.getLong("category_id"),
-                resultSet.getString("name"),
-                resultSet.getDouble("price"),
-                resultSet.getString("image_url")));
+                    resultSet.getLong("id"),
+                    resultSet.getLong("category_id"),
+                    resultSet.getString("name"),
+                    resultSet.getDouble("price"),
+                    resultSet.getString("image_url")));
 
             }
 
@@ -72,7 +72,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Product findById(Long id) {
-        String SELECT_ALL_PRODUCT_BY_CATEGORY = "Select * From product Where id = " + id;
+        String SELECT_ALL_PRODUCT_BY_CATEGORY = "SELECT * FROM product WHERE id = " + id;
         try {
             PreparedStatement statement = connection.prepareStatement(SELECT_ALL_PRODUCT_BY_CATEGORY);
             ResultSet resultSet = statement.executeQuery();

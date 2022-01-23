@@ -52,7 +52,7 @@ public class AppFoodBot extends TelegramLongPollingBot {
 
 
             if (data.contains("category")) {
-                Long categoryId= Long.parseLong(data.substring(9).trim());
+                long categoryId= Long.parseLong(data.substring(9).trim());
                 editMessageText = BotService.showProductsByCategory(message, categoryId);
 
                 try {
@@ -61,7 +61,7 @@ public class AppFoodBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
 
-            } else if (data.contains("product")) {
+            } else if(data.contains("product")) {
                 long productId = Long.parseLong(data.substring(8).trim());
                 SendPhoto sendPhoto = BotService.showProductInfoById(message, productId);
 
