@@ -1,8 +1,9 @@
-package service;
+package service.impl;
 
 import model.Category;
 import repository.CategoryRepository;
-import repository.CategoryRepositoryImpl;
+import repository.impl.CategoryRepositoryImpl;
+import service.CategoryService;
 
 import java.sql.SQLException;
 import java.util.List;

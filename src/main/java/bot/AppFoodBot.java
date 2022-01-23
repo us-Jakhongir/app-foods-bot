@@ -51,7 +51,7 @@ public class AppFoodBot extends TelegramLongPollingBot {
             EditMessageText editMessageText = null;
 
 
-            if (data.contains("category")) {
+            if (data.contains("category/")) {
                 long categoryId= Long.parseLong(data.substring(9).trim());
                 editMessageText = BotService.showProductsByCategory(message, categoryId);
 
@@ -61,7 +61,7 @@ public class AppFoodBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
 
-            } else if(data.contains("product")) {
+            } else if (data.contains("product/")) {
                 long productId = Long.parseLong(data.substring(8).trim());
                 SendPhoto sendPhoto = BotService.showProductInfoById(message, productId);
 
@@ -70,6 +70,8 @@ public class AppFoodBot extends TelegramLongPollingBot {
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
+            } else if (data.contains("amount")) {
+
             }
         }
     }

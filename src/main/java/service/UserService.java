@@ -3,7 +3,7 @@ package service;
 import model.User;
 
 public interface UserService {
-    void save(User user);
+    Long save(User user);
 
     boolean existsByChatId(Long chatId);
 

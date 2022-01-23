@@ -1,6 +1,7 @@
 package bot;
 
 import enums.BotState;
+import model.Cart;
 import model.Category;
 import model.Product;
 import model.User;
@@ -18,6 +19,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import service.*;
+import service.impl.CartServiceImpl;
+import service.impl.CategoryServiceImpl;
+import service.impl.ProductServiceImpl;
+import service.impl.UserServicceImpl;
 import util.BotConstants;
 import util.BotMenu;
 
@@ -30,6 +35,7 @@ public class BotService {
     public static UserService userService = new UserServicceImpl();
     public static CategoryService categoryService = new CategoryServiceImpl();
     public static ProductService productService = new ProductServiceImpl();
+    public static CartService cartService = new CartServiceImpl();
 
 
     public static SendMessage start(Update update) {
@@ -81,7 +87,16 @@ public class BotService {
                     BotState.START
             );
 
-            userService.save(user);
+            Long lastSavedId = userService.save(user);
+
+            /**
+             * CREAT CART FOR NEW USER
+             */
+            if (!cartService.existsByUserId(lastSavedId)) {
+                cartService.save(new Cart(lastSavedId));
+
+            }
+
 
 
         }
@@ -201,6 +216,9 @@ public class BotService {
         sendPhoto.setPhoto(new InputFile(product.getImageUrl()));
         sendPhoto.setCaption(product.getName() + "\n\nPrice: " + product.getPrice() + "so'm\n\nMiqdorini tanlang:");
 
+        /**
+         * 9 INLINE BUTTON FOR COUNT OF ORDER
+         */
         sendPhoto.setReplyMarkup(getInlineKeyboardsForOrder(productId));
 
         return sendPhoto;

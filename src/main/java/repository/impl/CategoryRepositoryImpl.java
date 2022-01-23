@@ -1,6 +1,7 @@
-package repository;
+package repository.impl;
 
 import model.Category;
+import repository.CategoryRepository;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

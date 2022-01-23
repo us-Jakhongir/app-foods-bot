@@ -1,8 +1,9 @@
-package repository;
+package repository.impl;
 
 
 import enums.BotState;
 import model.User;
+import repository.UserRepository;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,7 +29,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void save(User user) {
+    public Long save(User user) {
         String INSERT_NEW_USER = "INSERT INTO users(chat_id, first_name, last_name, username, phone_number, bot_state) VALUES (?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement statement = connection.prepareStatement(INSERT_NEW_USER);
@@ -41,10 +42,15 @@ public class UserRepositoryImpl implements UserRepository {
 
             statement.executeUpdate();
 
-
+            String SELECT_LAST_SAVED = "SELECT * FROM users ORDER BY id DESC LIMIT 1";
+            statement = connection.prepareStatement(SELECT_LAST_SAVED);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next())
+                return resultSet.getLong("id");
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     @Override

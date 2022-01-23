@@ -1,16 +1,17 @@
-package service;
+package service.impl;
 
 import model.User;
 import repository.UserRepository;
-import repository.UserRepositoryImpl;
+import repository.impl.UserRepositoryImpl;
+import service.UserService;
 
 public class UserServicceImpl implements UserService {
     public static UserRepository userRepository = new UserRepositoryImpl();
 
 
     @Override
-    public void save(User user) {
-        userRepository.save(user);
+    public Long save(User user) {
+        return userRepository.save(user);
 
     }
 

@@ -1,7 +1,8 @@
-package repository;
+package repository.impl;
 
 import model.Category;
 import model.Product;
+import repository.ProductRepository;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -84,13 +85,11 @@ public class ProductRepositoryImpl implements ProductRepository {
                         resultSet.getString("name"),
                         resultSet.getDouble("price"),
                         resultSet.getString("image_url"));
-
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 }

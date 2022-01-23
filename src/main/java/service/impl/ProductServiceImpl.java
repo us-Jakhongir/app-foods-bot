@@ -1,8 +1,9 @@
-package service;
+package service.impl;
 
 import model.Product;
 import repository.ProductRepository;
-import repository.ProductRepositoryImpl;
+import repository.impl.ProductRepositoryImpl;
+import service.ProductService;
 
 import java.sql.SQLException;
 import java.util.List;
