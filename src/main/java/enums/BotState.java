@@ -6,7 +6,8 @@ public enum BotState {
     START,
     SHOW_MENU,
     SHOW_PRODUCTS,
-    SHOW_CATEGORIES;
+    SHOW_CATEGORIES,
+    SELECT_PRODUCT;
 
 
     public static BotState fromString(String name) {

@@ -69,4 +69,28 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
         return products;
     }
+
+    @Override
+    public Product findById(Long id) {
+        String SELECT_ALL_PRODUCT_BY_CATEGORY = "Select * From product Where id = " + id;
+        try {
+            PreparedStatement statement = connection.prepareStatement(SELECT_ALL_PRODUCT_BY_CATEGORY);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+
+                return new Product(
+                        resultSet.getLong("id"),
+                        resultSet.getLong("category_id"),
+                        resultSet.getString("name"),
+                        resultSet.getDouble("price"),
+                        resultSet.getString("image_url"));
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

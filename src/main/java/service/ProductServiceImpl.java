@@ -29,7 +29,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(Long id) {
-        return null;
+        return productRepository.findById(id);
     }
 
     @Override

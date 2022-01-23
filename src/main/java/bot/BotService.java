@@ -6,7 +6,9 @@ import model.Product;
 import model.User;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -114,13 +116,13 @@ public class BotService {
             Category next = iterator.next();
             buttons = new ArrayList<>();
             InlineKeyboardButton button1 = new InlineKeyboardButton(next.getPrefix() + " " + next.getName());
-            button1.setCallbackData(next.getId().toString());
+            button1.setCallbackData("category/" + next.getId().toString());
             buttons.add(button1);
 
             if (iterator.hasNext()) {
                 next = iterator.next();
                 InlineKeyboardButton button2 = new InlineKeyboardButton(next.getPrefix() + " " + next.getName());
-                button2.setCallbackData(next.getId().toString());
+                button2.setCallbackData("category/" + next.getId().toString());
                 buttons.add(button2);
 
 
@@ -141,16 +143,16 @@ public class BotService {
 
         Iterator<Product> iterator = productList.iterator();
         while (iterator.hasNext()) {
-            Product next = iterator.next();
+            Product product = iterator.next();
             buttons = new ArrayList<>();
-            InlineKeyboardButton button1 = new InlineKeyboardButton(next.getName());
-            button1.setCallbackData(next.getId().toString());
+            InlineKeyboardButton button1 = new InlineKeyboardButton(product.getName());
+            button1.setCallbackData("product/" + product.getId().toString());
             buttons.add(button1);
 
             if (iterator.hasNext()) {
-                next = iterator.next();
-                InlineKeyboardButton button2 = new InlineKeyboardButton(next.getName());
-                button2.setCallbackData(next.getId().toString());
+                product = iterator.next();
+                InlineKeyboardButton button2 = new InlineKeyboardButton(product.getName());
+                button2.setCallbackData("product/" + product.getId().toString());
                 buttons.add(button2);
 
 
@@ -184,5 +186,45 @@ public class BotService {
 
 
         return editMessageText;
+    }
+
+    public static SendPhoto showProductInfoById(Message message, long productId) {
+        User user = userService.findByChatId(message.getChatId());
+        if (user != null) {
+            user.setBotState(BotState.SELECT_PRODUCT);
+            userService.update(user);
+        }
+
+        SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setChatId(message.getChatId().toString());
+        Product product = productService.findById(productId);
+        sendPhoto.setPhoto(new InputFile(product.getImageUrl()));
+        sendPhoto.setCaption(product.getName() + "\n\nPrice: " + product.getPrice() + "so'm\n\nMiqdorini tanlang:");
+
+        sendPhoto.setReplyMarkup(getInlineKeyboardsForOrder(productId));
+
+        return sendPhoto;
+    }
+
+    private static ReplyKeyboard getInlineKeyboardsForOrder(Long productId) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> inlineKeyBoards = new ArrayList<>();
+
+
+        int count = 1;
+        for (int i = 0; i < 3; i++) {
+            List<InlineKeyboardButton> buttons = new ArrayList<>();
+
+            for (int j = 0; j < 3; j++) {
+                InlineKeyboardButton button = new InlineKeyboardButton(count + " ta");
+                button.setCallbackData("amount/" + productId + "/" + count);
+                buttons.add(button);
+                count++;
+            }
+            inlineKeyBoards.add(buttons);
+        }
+
+        inlineKeyboardMarkup.setKeyboard(inlineKeyBoards);
+        return inlineKeyboardMarkup;
     }
 }

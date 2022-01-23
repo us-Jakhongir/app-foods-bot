@@ -14,4 +14,6 @@ public interface ProductRepository {
     void saveAll(List<Product> products) throws SQLException;
 
     List<Product> findAllByCategoryId(long categoryId);
+
+    Product findById(Long id);
 }
