@@ -6,6 +6,7 @@ import model.Product;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static config.DbConfig.connection;
@@ -42,5 +43,30 @@ public class ProductRepositoryImpl implements ProductRepository {
 
             }
         }
+    }
+
+    @Override
+    public List<Product> findAllByCategoryId(long categoryId) {
+        List<Product> products = new ArrayList<>();
+
+        String SELECT_ALL_PRODUCT_BY_CATEGORY = "Select * From product Where category_id = " + categoryId;
+        try {
+            PreparedStatement statement = connection.prepareStatement(SELECT_ALL_PRODUCT_BY_CATEGORY);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+
+                products.add(new Product(
+                resultSet.getLong("id"),
+                resultSet.getLong("category_id"),
+                resultSet.getString("name"),
+                resultSet.getDouble("price"),
+                resultSet.getString("image_url")));
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return products;
     }
 }

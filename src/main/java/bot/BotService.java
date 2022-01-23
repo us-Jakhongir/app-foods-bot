@@ -2,9 +2,12 @@ package bot;
 
 import enums.BotState;
 import model.Category;
+import model.Product;
 import model.User;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -12,12 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import repository.UserRepository;
-import repository.UserRepositoryImpl;
-import service.CategoryService;
-import service.CategoryServiceImpl;
-import service.UserServicceImpl;
-import service.UserService;
+import service.*;
 import util.BotConstants;
 import util.BotMenu;
 
@@ -29,6 +27,7 @@ public class BotService {
 
     public static UserService userService = new UserServicceImpl();
     public static CategoryService categoryService = new CategoryServiceImpl();
+    public static ProductService productService = new ProductServiceImpl();
 
 
     public static SendMessage start(Update update) {
@@ -124,6 +123,7 @@ public class BotService {
                 button2.setCallbackData(next.getId().toString());
                 buttons.add(button2);
 
+
             }
             inlineKeyBoards.add(buttons);
         }
@@ -131,5 +131,58 @@ public class BotService {
 
         inlineKeyboardMarkup.setKeyboard(inlineKeyBoards);
         return inlineKeyboardMarkup;
+    }
+
+
+    private static InlineKeyboardMarkup getInlineKeyboardsProduct(List<Product> productList) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> inlineKeyBoards = new ArrayList<>();
+        List<InlineKeyboardButton> buttons = new ArrayList<>();
+
+        Iterator<Product> iterator = productList.iterator();
+        while (iterator.hasNext()) {
+            Product next = iterator.next();
+            buttons = new ArrayList<>();
+            InlineKeyboardButton button1 = new InlineKeyboardButton(next.getName());
+            button1.setCallbackData(next.getId().toString());
+            buttons.add(button1);
+
+            if (iterator.hasNext()) {
+                next = iterator.next();
+                InlineKeyboardButton button2 = new InlineKeyboardButton(next.getName());
+                button2.setCallbackData(next.getId().toString());
+                buttons.add(button2);
+
+
+            }
+            inlineKeyBoards.add(buttons);
+        }
+
+
+        inlineKeyboardMarkup.setKeyboard(inlineKeyBoards);
+        return inlineKeyboardMarkup;
+    }
+
+
+
+    public static EditMessageText showProductsByCategory(Message message, long categoryId) {
+        User user = userService.findByChatId(message.getChatId());
+        if (user != null) {
+            user.setBotState(BotState.SHOW_PRODUCTS);
+            userService.update(user);
+        }
+
+        List<Product> products = productService.findAllByCategoryId(categoryId);
+
+        EditMessageText editMessageText = new EditMessageText();
+        editMessageText.setChatId(message.getChatId().toString());
+        editMessageText.setMessageId(message.getMessageId());
+        editMessageText.setParseMode(ParseMode.MARKDOWN);
+        editMessageText.setText(BotConstants.MENU_HEADER);
+
+        editMessageText.setReplyMarkup(getInlineKeyboardsProduct(products));
+
+
+        return editMessageText;
     }
 }
